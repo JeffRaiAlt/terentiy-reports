@@ -1,0 +1,1783 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Terentiy ML diagnostics</title><style>
+body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#1f2937}table{border-collapse:collapse;width:100%;margin-top:16px}th,td{border:1px solid #cbd5e1;padding:7px;text-align:left;vertical-align:top}th{background:#e2e8f0;position:sticky;top:0}.configuration-table{max-width:1000px}.configuration-table td:first-child{font-family:ui-monospace,Consolas,monospace}.configuration-table tbody tr:nth-child(odd){background:#f8fafc}.configuration-table tbody tr:nth-child(even){background:#eaf2ff}.frame-results>thead>tr>th:nth-child(-n+4),.frame-results>tbody>tr>td:nth-child(-n+4),.frame-results>thead>tr>th:nth-child(7),.frame-results>tbody>tr>td:nth-child(7){width:1%;white-space:nowrap}.frame-results>tbody>tr>td:nth-child(5),.frame-results>tbody>tr>td:nth-child(6){width:100%}pre{margin:0;white-space:pre-wrap;font:12px/1.35 ui-monospace,Consolas,monospace}img{display:block;max-width:240px;max-height:160px;object-fit:contain}.rule-results{font:12px/1.3 ui-monospace,Consolas,monospace;margin:0;min-width:1100px}.rule-results th{position:static;white-space:nowrap}.rule-results td{white-space:nowrap}.fall>td{background:#fecaca;color:#7f1d1d;font-weight:600}.candidate>td{background:#fef3c7;color:#78350f}.normal>td{background:#f8fafc}.note{color:#64748b}.summary{background:#f1f5f9;padding:12px;border-radius:6px}nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}nav a{background:#dbeafe;border-radius:4px;padding:6px 9px;color:#1d4ed8;text-decoration:none}section{margin-top:40px;scroll-margin-top:12px}</style></head><body>
+<h1>Диагностика ML сервера Terentiy</h1><p class="summary">OFFLINE REPLAY: те же сохранённые bbox/keypoints, новый tracking и повторный расчёт правил. Модели не запускались; изображения со старыми Track ID скрыты. События в БД не создавались.</p><p class="summary">Обработано кадров: <b>112</b>.</p>
+<p>Одна строка — один обработанный кадр. «Найдено pose» имеет вид «принято / найдено». Причина показана JSON-объектом; оценки имеют вид «набранная сумма / порог». В колонке «Правила» ссылка открывает полную таблицу в новой вкладке.</p>
+<section class="configuration"><h2>Конфигурация правил текущего запуска</h2><table class="configuration-table"><thead><tr><th>Название</th><th>Значение</th></tr></thead><tbody><tr><td>fingerprint</td><td>aeead8172fecacca</td></tr><tr><td>values.decision.fall_cooldown_seconds</td><td>10.0</td></tr><tr><td>values.disappearance.max_consecutive_pose_misses</td><td>4</td></tr><tr><td>values.pose.confidence_threshold</td><td>0.1</td></tr><tr><td>values.pose.keypoint_confidence_threshold</td><td>0.15</td></tr><tr><td>values.rules.angular_enabled</td><td>True</td></tr><tr><td>values.rules.angular_measurement_window_seconds</td><td>1.0</td></tr><tr><td>values.rules.angular_minimum_speed</td><td>60.0</td></tr><tr><td>values.rules.angular_terminal_angle</td><td>55.0</td></tr><tr><td>values.rules.angular_weight</td><td>1.0</td></tr><tr><td>values.rules.aspect_enabled</td><td>True</td></tr><tr><td>values.rules.aspect_minimum_ratio</td><td>1.2</td></tr><tr><td>values.rules.aspect_weight</td><td>1.0</td></tr><tr><td>values.rules.body_axis_minimum_length_ratio</td><td>0.15</td></tr><tr><td>values.rules.candidate_timeout_seconds</td><td>3.0</td></tr><tr><td>values.rules.confirmation_hip_drop_body_heights</td><td>0.2</td></tr><tr><td>values.rules.confirmation_max_failed_confirmation_gap_seconds</td><td>0.1</td></tr><tr><td>values.rules.confirmation_max_missing_observation_seconds</td><td>0.3</td></tr><tr><td>values.rules.confirmation_minimum_duration_seconds</td><td>0.5</td></tr><tr><td>values.rules.head_at_hip_weight</td><td>1.0</td></tr><tr><td>values.rules.hip_below_baseline_weight</td><td>1.0</td></tr><tr><td>values.rules.keypoint_span_initial_pixels</td><td>8.0</td></tr><tr><td>values.rules.keypoint_span_tracked_pixels</td><td>4.0</td></tr><tr><td>values.rules.lower_body_enabled</td><td>True</td></tr><tr><td>values.rules.lower_body_maximum_below_upper_body_baseline_heights</td><td>0.2</td></tr><tr><td>values.rules.lower_body_weight</td><td>1.0</td></tr><tr><td>values.rules.minimum_candidate_score</td><td>1.0</td></tr><tr><td>values.rules.minimum_confirmation_score</td><td>1.0</td></tr><tr><td>values.rules.orientation_enabled</td><td>True</td></tr><tr><td>values.rules.orientation_maximum_backward</td><td>8.0</td></tr><tr><td>values.rules.orientation_terminal_angle</td><td>55.0</td></tr><tr><td>values.rules.orientation_total_change</td><td>25.0</td></tr><tr><td>values.rules.orientation_weight</td><td>1.0</td></tr><tr><td>values.rules.orientation_window_seconds</td><td>1.5</td></tr><tr><td>values.rules.terminal_body_angle_weight</td><td>1.0</td></tr><tr><td>values.rules.track_disappearance_weight</td><td>1.0</td></tr><tr><td>values.rules.vertical_comparison_interval_seconds</td><td>0.5</td></tr><tr><td>values.rules.vertical_comparison_tolerance_seconds</td><td>0.15</td></tr><tr><td>values.rules.vertical_enabled</td><td>True</td></tr><tr><td>values.rules.vertical_maximum_current_to_reference_scale_ratio</td><td>2.0</td></tr><tr><td>values.rules.vertical_minimum_speed</td><td>1.0</td></tr><tr><td>values.rules.vertical_weight</td><td>1.0</td></tr><tr><td>values.tracking.history_seconds</td><td>15.0</td></tr><tr><td>values.tracking.iou_threshold</td><td>0.2</td></tr><tr><td>values.tracking.recovery.ambiguity_margin</td><td>0.15</td></tr><tr><td>values.tracking.recovery.max_center_distance</td><td>0.75</td></tr><tr><td>values.tracking.recovery.max_gap_seconds</td><td>1.0</td></tr><tr><td>values.tracking.recovery.max_keypoint_distance</td><td>0.75</td></tr><tr><td>values.tracking.recovery.max_scale_ratio</td><td>3.0</td></tr></tbody></table></section>
+<nav><a href="#fragment-1">Видео-фрагмент: fall_1.mp4</a><a href="#fragment-2">Видео-фрагмент: fall_2.mp4</a><a href="#fragment-3">Видео-фрагмент: fall_3.mp4</a><a href="#fragment-4">Видео-фрагмент: fall_4.mp4</a><a href="#fragment-5">Видео-фрагмент: fall_5.mp4</a></nav><section id="fragment-1"><h2>Видео-фрагмент: fall_1.mp4</h2><p class="summary">Обработано кадров: <b>26</b>.</p><table class="frame-results"><thead><tr><th>Кадр №</th><th>Время</th><th>Найдено pose</th><th>Track ID</th><th>Причина</th><th>Правила</th><th>Инференс, мс</th><th>Детекция</th></tr></thead><tbody><tr class="normal"><td>1</td><td>26.10.2026 00:51:18.847 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000001.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>2</td><td>26.10.2026 00:51:19.487 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000002.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>3</td><td>26.10.2026 00:51:20.032 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000003.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>4</td><td>26.10.2026 00:51:20.657 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000004.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>5</td><td>26.10.2026 00:51:21.201 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000005.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>6</td><td>26.10.2026 00:51:21.824 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000006.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>7</td><td>26.10.2026 00:51:22.370 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000007.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>8</td><td>26.10.2026 00:51:22.994 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000008.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>9</td><td>26.10.2026 00:51:23.546 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000009.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>10</td><td>26.10.2026 00:51:24.170 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000010.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>11</td><td>26.10.2026 00:51:24.720 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000011.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>12</td><td>26.10.2026 00:51:25.349 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000012.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>13</td><td>26.10.2026 00:51:25.899 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000013.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>14</td><td>26.10.2026 00:51:26.526 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000014.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>15</td><td>26.10.2026 00:51:27.076 MSK</td><td>1 / 1</td><td>1</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 1,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000015.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>16</td><td>26.10.2026 00:51:27.703 MSK</td><td>1 / 1</td><td>2</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 2,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000016.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>17</td><td>26.10.2026 00:51:28.254 MSK</td><td>3 / 3</td><td>3, 2, 4</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;new_track&quot;
+    },
+    {
+      &quot;track_id&quot;: 2,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000017.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>18</td><td>26.10.2026 00:51:28.881 MSK</td><td>1 / 3<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 1, слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>3</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;1 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000018.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>19</td><td>26.10.2026 00:51:29.431 MSK</td><td>2 / 4<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 1, слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;new_track&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000019.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>20</td><td>26.10.2026 00:51:30.062 MSK</td><td>2 / 4<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 2</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000020.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>21</td><td>26.10.2026 00:51:30.611 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000021.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>22</td><td>26.10.2026 00:51:31.237 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000022.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>23</td><td>26.10.2026 00:51:31.790 MSK</td><td>2 / 4<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 2</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000023.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>24</td><td>26.10.2026 00:51:32.419 MSK</td><td>2 / 2</td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000024.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>25</td><td>26.10.2026 00:51:32.972 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>3, 5</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 5,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 4,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000025.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>26</td><td>26.10.2026 00:51:33.600 MSK</td><td>1 / 1</td><td>3</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 3,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000026.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr></tbody></table></section><section id="fragment-2"><h2>Видео-фрагмент: fall_2.mp4</h2><p class="summary">Обработано кадров: <b>19</b>.</p><table class="frame-results"><thead><tr><th>Кадр №</th><th>Время</th><th>Найдено pose</th><th>Track ID</th><th>Причина</th><th>Правила</th><th>Инференс, мс</th><th>Детекция</th></tr></thead><tbody><tr class="normal"><td>1</td><td>26.10.2026 00:51:35.197 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000027.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>2</td><td>26.10.2026 00:51:35.841 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000028.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>3</td><td>26.10.2026 00:51:36.389 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000029.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>4</td><td>26.10.2026 00:51:37.017 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000030.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>5</td><td>26.10.2026 00:51:37.569 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000031.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>6</td><td>26.10.2026 00:51:38.198 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000032.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>7</td><td>26.10.2026 00:51:38.750 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000033.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>8</td><td>26.10.2026 00:51:39.378 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000034.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>9</td><td>26.10.2026 00:51:39.928 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000035.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>10</td><td>26.10.2026 00:51:40.559 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000036.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>11</td><td>26.10.2026 00:51:41.110 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000037.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>12</td><td>26.10.2026 00:51:41.731 MSK</td><td>1 / 1</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000038.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>13</td><td>26.10.2026 00:51:42.281 MSK</td><td>1 / 2</td><td>6</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000039.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>14</td><td>26.10.2026 00:51:42.898 MSK</td><td>3 / 3</td><td>7, 6, 8</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;new_track&quot;
+    },
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 8,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000040.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>15</td><td>26.10.2026 00:51:43.444 MSK</td><td>3 / 3</td><td>6, 7, 8</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;pose_recovery&quot;,
+      &quot;cost&quot;: 0.6902358295208113,
+      &quot;elapsed_seconds&quot;: 0.28,
+      &quot;center_distance&quot;: 0.6015349538234216,
+      &quot;keypoint_distance&quot;: 0.7493697466524045,
+      &quot;scale_ratio&quot;: 1.8049459441113125
+    },
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 8,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000041.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>16</td><td>26.10.2026 00:51:44.068 MSK</td><td>3 / 3</td><td>6, 7, 8</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 8,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000042.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>17</td><td>26.10.2026 00:51:44.629 MSK</td><td>3 / 4</td><td>6, 8, 7</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 8,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000043.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>18</td><td>26.10.2026 00:51:45.248 MSK</td><td>2 / 4<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 2</span></td><td>6, 7</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 4,
+  &quot;pose&quot;: &quot;2 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 8,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.32 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000044.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="fall"><td>19</td><td>26.10.2026 00:51:45.813 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>6, 7</td><td><pre>{
+  &quot;решение&quot;: &quot;ПАДЕНИЕ&quot;,
+  &quot;track_id&quot;: 6,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 6,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 7,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.6 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000045.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr></tbody></table></section><section id="fragment-3"><h2>Видео-фрагмент: fall_3.mp4</h2><p class="summary">Обработано кадров: <b>18</b>.</p><table class="frame-results"><thead><tr><th>Кадр №</th><th>Время</th><th>Найдено pose</th><th>Track ID</th><th>Причина</th><th>Правила</th><th>Инференс, мс</th><th>Детекция</th></tr></thead><tbody><tr class="normal"><td>1</td><td>26.10.2026 00:51:47.477 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000046.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>2</td><td>26.10.2026 00:51:48.040 MSK</td><td>1 / 2</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000047.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>3</td><td>26.10.2026 00:51:48.666 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000048.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>4</td><td>26.10.2026 00:51:49.210 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000049.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>5</td><td>26.10.2026 00:51:49.849 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000050.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>6</td><td>26.10.2026 00:51:50.399 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000051.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>7</td><td>26.10.2026 00:51:51.025 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000052.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>8</td><td>26.10.2026 00:51:51.573 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000053.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>9</td><td>26.10.2026 00:51:52.217 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000054.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>10</td><td>26.10.2026 00:51:52.784 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000055.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>11</td><td>26.10.2026 00:51:53.429 MSK</td><td>1 / 2</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000056.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>12</td><td>26.10.2026 00:51:53.973 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000057.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>13</td><td>26.10.2026 00:51:54.597 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000058.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>14</td><td>26.10.2026 00:51:55.145 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000059.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>15</td><td>26.10.2026 00:51:55.782 MSK</td><td>1 / 1</td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000060.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>16</td><td>26.10.2026 00:51:56.330 MSK</td><td>1 / 4<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 3</span></td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 4,
+  &quot;pose&quot;: &quot;1 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000061.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>17</td><td>26.10.2026 00:51:56.966 MSK</td><td>1 / 2<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 1</span></td><td>9</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;1 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000062.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>18</td><td>26.10.2026 00:51:57.514 MSK</td><td>2 / 6<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 3</span></td><td>9, 10</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 9,
+  &quot;люди (детектор)&quot;: 4,
+  &quot;pose&quot;: &quot;2 / 6&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 9,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 10,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000063.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr></tbody></table></section><section id="fragment-4"><h2>Видео-фрагмент: fall_4.mp4</h2><p class="summary">Обработано кадров: <b>20</b>.</p><table class="frame-results"><thead><tr><th>Кадр №</th><th>Время</th><th>Найдено pose</th><th>Track ID</th><th>Причина</th><th>Правила</th><th>Инференс, мс</th><th>Детекция</th></tr></thead><tbody><tr class="normal"><td>1</td><td>26.10.2026 00:51:59.190 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000064.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>2</td><td>26.10.2026 00:51:59.739 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000065.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>3</td><td>26.10.2026 00:52:00.378 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000066.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>4</td><td>26.10.2026 00:52:00.933 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000067.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>5</td><td>26.10.2026 00:52:01.558 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000068.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>6</td><td>26.10.2026 00:52:02.134 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000069.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>7</td><td>26.10.2026 00:52:02.759 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000070.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>8</td><td>26.10.2026 00:52:03.304 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 11,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000071.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>9</td><td>26.10.2026 00:52:03.927 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 1</span></td><td>11, 12</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 11,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;pose_recovery&quot;,
+      &quot;cost&quot;: 0.4200755717471184,
+      &quot;elapsed_seconds&quot;: 0.32,
+      &quot;center_distance&quot;: 0.5132208119724776,
+      &quot;keypoint_distance&quot;: 0.3579787449302122,
+      &quot;scale_ratio&quot;: 1.2482481968968782
+    },
+    {
+      &quot;track_id&quot;: 12,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000072.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>10</td><td>26.10.2026 00:52:04.470 MSK</td><td>2 / 2</td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 11,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;new_track&quot;
+    },
+    {
+      &quot;track_id&quot;: 12,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.28 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000073.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="fall"><td>11</td><td>26.10.2026 00:52:05.096 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;ПАДЕНИЕ&quot;,
+  &quot;track_id&quot;: 11,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.6 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000074.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>12</td><td>26.10.2026 00:52:05.657 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000075.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>13</td><td>26.10.2026 00:52:06.286 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000076.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>14</td><td>26.10.2026 00:52:06.832 MSK</td><td>2 / 2</td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000077.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>15</td><td>26.10.2026 00:52:07.468 MSK</td><td>2 / 2</td><td>11, 13</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 13,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000078.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>16</td><td>26.10.2026 00:52:08.021 MSK</td><td>1 / 1</td><td>11</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000079.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>17</td><td>26.10.2026 00:52:08.655 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у новой детекции (строгий порог): 1</span></td><td>11, 14</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 14,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000080.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>18</td><td>26.10.2026 00:52:09.217 MSK</td><td>2 / 2</td><td>11, 14</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 14,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000081.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>19</td><td>26.10.2026 00:52:09.840 MSK</td><td>2 / 3</td><td>11, 14</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 14,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000082.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>20</td><td>26.10.2026 00:52:10.400 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>11, 14</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 11,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 14,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000083.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr></tbody></table></section><section id="fragment-5"><h2>Видео-фрагмент: fall_5.mp4</h2><p class="summary">Обработано кадров: <b>29</b>.</p><table class="frame-results"><thead><tr><th>Кадр №</th><th>Время</th><th>Найдено pose</th><th>Track ID</th><th>Причина</th><th>Правила</th><th>Инференс, мс</th><th>Детекция</th></tr></thead><tbody><tr class="normal"><td>1</td><td>26.10.2026 00:52:12.075 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000084.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>2</td><td>26.10.2026 00:52:12.632 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000085.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>3</td><td>26.10.2026 00:52:13.257 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000086.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>4</td><td>26.10.2026 00:52:13.799 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000087.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>5</td><td>26.10.2026 00:52:14.422 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000088.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>6</td><td>26.10.2026 00:52:14.964 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000089.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>7</td><td>26.10.2026 00:52:15.581 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000090.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>8</td><td>26.10.2026 00:52:16.128 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000091.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>9</td><td>26.10.2026 00:52:16.809 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000092.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>10</td><td>26.10.2026 00:52:17.362 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000093.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>11</td><td>26.10.2026 00:52:17.986 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000094.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>12</td><td>26.10.2026 00:52:18.545 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000095.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>13</td><td>26.10.2026 00:52:19.295 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000096.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>14</td><td>26.10.2026 00:52:19.852 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000097.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>15</td><td>26.10.2026 00:52:20.490 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000098.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>16</td><td>26.10.2026 00:52:21.035 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000099.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>17</td><td>26.10.2026 00:52:21.658 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000100.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>18</td><td>26.10.2026 00:52:22.298 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000101.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>19</td><td>26.10.2026 00:52:22.936 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000102.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>20</td><td>26.10.2026 00:52:23.482 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000103.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>21</td><td>26.10.2026 00:52:24.103 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000104.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>22</td><td>26.10.2026 00:52:24.664 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 15,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000105.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>23</td><td>26.10.2026 00:52:25.298 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 15,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;pose_recovery&quot;,
+      &quot;cost&quot;: 0.4474883445651441,
+      &quot;elapsed_seconds&quot;: 0.32,
+      &quot;center_distance&quot;: 0.45326086684340294,
+      &quot;keypoint_distance&quot;: 0.4436399963796382,
+      &quot;scale_ratio&quot;: 1.312218733042395
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;1.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000106.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>24</td><td>26.10.2026 00:52:25.838 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 15,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000107.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="candidate"><td>25</td><td>26.10.2026 00:52:26.475 MSK</td><td>1 / 1</td><td>15</td><td><pre>{
+  &quot;решение&quot;: &quot;КАНДИДАТ&quot;,
+  &quot;track_id&quot;: 15,
+  &quot;люди (детектор)&quot;: 1,
+  &quot;pose&quot;: &quot;1 / 1&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;3.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.32 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000108.html" target="_blank" rel="noopener">Открыть правила (17)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="fall"><td>26</td><td>26.10.2026 00:52:27.022 MSK</td><td>2 / 2</td><td>16, 15</td><td><pre>{
+  &quot;решение&quot;: &quot;ПАДЕНИЕ&quot;,
+  &quot;track_id&quot;: 15,
+  &quot;люди (детектор)&quot;: 2,
+  &quot;pose&quot;: &quot;2 / 2&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 16,
+      &quot;method&quot;: &quot;new_track&quot;
+    },
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;2.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.6 / 0.5&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000109.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>27</td><td>26.10.2026 00:52:27.641 MSK</td><td>3 / 3</td><td>15, 16, 17</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 16,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 17,
+      &quot;method&quot;: &quot;new_track&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000110.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>28</td><td>26.10.2026 00:52:28.185 MSK</td><td>2 / 3<br><span class=note>отброшено: слишком малый размах keypoints у уже отслеживаемого человека (пониженный порог): 1</span></td><td>15, 16</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;2 / 3&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 16,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 17,
+      &quot;method&quot;: &quot;iou&quot;,
+      &quot;pose_missing&quot;: true
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000111.html" target="_blank" rel="noopener">Открыть правила (34)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr><tr class="normal"><td>29</td><td>26.10.2026 00:52:28.818 MSK</td><td>3 / 4</td><td>15, 16, 17</td><td><pre>{
+  &quot;решение&quot;: &quot;нет кандидата на падение&quot;,
+  &quot;люди (детектор)&quot;: 3,
+  &quot;pose&quot;: &quot;3 / 4&quot;,
+  &quot;привязка треков&quot;: [
+    {
+      &quot;track_id&quot;: 15,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 16,
+      &quot;method&quot;: &quot;iou&quot;
+    },
+    {
+      &quot;track_id&quot;: 17,
+      &quot;method&quot;: &quot;iou&quot;
+    }
+  ],
+  &quot;оценка кандидата&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;оценка подтверждения&quot;: &quot;0.0 / 1.0&quot;,
+  &quot;длительность confirmation&quot;: &quot;0.0 / 0.5&quot;,
+  &quot;пояснение&quot;: &quot;pose найден, но ни одно правило кандидата на падение не сработало&quot;
+}</pre></td><td><a class="rules-link" href="ml-diagnostic-report-tracking-replay-rules/frame-000112.html" target="_blank" rel="noopener">Открыть правила (51)</a></td><td>replay: models not run</td><td><span class=note>визуализация выключена</span></td></tr></tbody></table></section></body></html>
